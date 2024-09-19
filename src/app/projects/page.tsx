@@ -47,8 +47,8 @@ export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingProject, setEditingProject] = useState<string | null>(null);
-  const [statusOptions, setStatusOptions] = useState<string[]>([]);
   const { account } = useWallet();
+  const [statusOptions, setStatusOptions] = useState<string[]>([]);
 
   const fetchProjects = async () => {
     setIsLoading(true);
@@ -73,7 +73,7 @@ export default function MyProjects() {
       fetchProjects();
       fetchStatusOptions();
     }
-  }, [account?.address]);
+  }, [account?.address, fetchProjects]);
 
   const fetchStatusOptions = async () => {
     try {

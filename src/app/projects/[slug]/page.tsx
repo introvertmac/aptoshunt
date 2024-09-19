@@ -30,10 +30,10 @@ export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { connected, account, signAndSubmitTransaction } = useWallet();
-  const [donationAmount, setDonationAmount] = useState("");
-  const [donationStatus, setDonationStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  // const [donationAmount, setDonationAmount] = useState("");
+  // const [donationStatus, setDonationStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const aptos = new Aptos(new AptosConfig({ network: Network.TESTNET }));
+  // const aptos = new Aptos(new AptosConfig({ network: Network.TESTNET }));
 
   useEffect(() => {
     async function fetchProject() {
@@ -131,7 +131,7 @@ export default function ProjectPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold mb-4">Support the Project</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              If you'd like to support this project, you can donate test APT to the creator's wallet:
+              If you&apos;d like to support this project, you can donate test APT to the creator&apos;s wallet:
             </p>
             <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 font-mono text-sm break-all flex items-center justify-between">
               <span>{project.fields.Wallet}</span>
