@@ -1,100 +1,74 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+      <main className="container mx-auto px-4 py-12">
+        <header className="text-center mb-16">
+          <h1 className="text-5xl font-bold mb-4">
+            Aptos Hunt
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            Discover and fund the next big projects on Aptos
+          </p>
+        </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">
+              For Builders
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              Showcase your Aptos projects and connect with potential backers.
+            </p>
+            <Link
+              href="/submit-project"
+              className="inline-block bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Submit Your Project
+            </Link>
+          </div>
+          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">
+              For Hunters
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              Discover and support innovative projects building on Aptos. Be the first to find the next big thing!
+            </p>
+            <Link
+              href="/explore-projects"
+              className="inline-block bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              Explore Projects
+            </Link>
+          </div>
         </div>
+
+        <section className="text-center mb-16">
+          <h2 className="text-3xl font-semibold mb-8">
+            How Aptos Hunt Works
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { title: "Submit", desc: "Builders submit their Aptos projects" },
+              { title: "Hunt", desc: "Community discovers and upvotes promising projects" },
+              { title: "Fund", desc: "Top projects receive funding and support" },
+            ].map((step, index) => (
+              <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <div className="text-4xl font-bold mb-4">{index + 1}</div>
+                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="border-t border-gray-200 dark:border-gray-700 py-6 mt-12">
+        <div className="container mx-auto px-4 text-center text-gray-600 dark:text-gray-300">
+          <p>&copy; 2024 Aptos Hunt. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
