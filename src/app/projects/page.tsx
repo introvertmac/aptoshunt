@@ -9,7 +9,7 @@ import Airtable from 'airtable';
 // Removed unused 'AirtableField' interface
 
 interface AirtableBase {
-  table(name: string): Airtable.Table<any>;
+  table(name: string): Airtable.Table<Airtable.FieldSet>;
 }
 
 const base = new Airtable({apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}).base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID!) as unknown as AirtableBase;
