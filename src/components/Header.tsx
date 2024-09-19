@@ -6,8 +6,8 @@ import { WalletConnectButton } from "./WalletConnectButton";
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
   const { account, disconnect, connected, network } = useWallet();
   const pathname = usePathname();
 
@@ -17,16 +17,16 @@ export function Header() {
     return () => window.removeEventListener('resize', closeMenu);
   }, []);
 
-  const getNetworkName = (network: { name: string } | null) => {
+  const getNetworkName = (network: { name: string } | null): string => {
     if (!network) return "Unknown";
     return network.name.charAt(0).toUpperCase() + network.name.slice(1).toLowerCase();
   };
 
-  const shortenAddress = (address: string) => {
+  const shortenAddress = (address: string): string => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string): void => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
