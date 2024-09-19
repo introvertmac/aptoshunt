@@ -1,6 +1,7 @@
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useState, useRef, useEffect } from "react";
 import { WalletName } from "@aptos-labs/wallet-adapter-react";
+import Image from 'next/image';
 
 export function WalletConnectButton() {
   const { connect, disconnect, connected, wallets } = useWallet();
@@ -75,10 +76,12 @@ export function WalletConnectButton() {
               className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               {wallet.icon && (
-                <img 
+                <Image 
                   src={wallet.icon} 
                   alt={wallet.name} 
-                  className="w-5 h-5 mr-3 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  className="mr-3 flex-shrink-0"
                 />
               )}
               <span className="truncate">{wallet.name}</span>

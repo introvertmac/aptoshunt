@@ -30,9 +30,8 @@ export default function SubmitProject() {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const aptos = new Aptos(new AptosConfig({ network: Network.TESTNET }));
-
   useEffect(() => {
+    const aptos = new Aptos(new AptosConfig({ network: Network.TESTNET }));
     async function fetchBalance() {
       if (connected && account?.address) {
         try {

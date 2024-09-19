@@ -47,8 +47,26 @@ export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingProject, setEditingProject] = useState<string | null>(null);
-  const { account } = useWallet();
   const [statusOptions, setStatusOptions] = useState<string[]>([]);
+  const { account } = useWallet();
+
+  const fetchProjects = async () => {
+    setIsLoading(true);
+    try {
+      const records = await base('Projects').select({
+        filterByFormula: `{Wallet} = '${account?.address}'`,
+        sort: [{ field: "Submitted", direction: "desc" }]
+      }).all();
+      setProjects(records.map(record => ({
+        id: record.id,
+        fields: record.fields as Project['fields']
+      })));
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (account?.address) {
@@ -66,24 +84,6 @@ export default function MyProjects() {
       }
     } catch (error) {
       console.error('Error fetching status options:', error);
-    }
-  };
-
-  const fetchProjects = async () => {
-    setIsLoading(true);
-    try {
-      const records = await base('Projects').select({
-        filterByFormula: `{Wallet} = '${account?.address}'`,
-        sort: [{ field: "Submitted", direction: "desc" }]
-      }).all();
-      setProjects(records.map(record => ({
-        id: record.id,
-        fields: record.fields as Project['fields']
-      })));
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -128,7 +128,7 @@ export default function MyProjects() {
       <main className="container mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold mb-8 text-center">My Projects</h1>
         {projects.length === 0 ? (
-          <p className="text-center text-xl">You haven't submitted any projects yet.</p>
+          <p className="text-center text-xl">You haven&apos;t submitted any projects yet.</p>
         ) : (
           <div className="space-y-8">
             {projects.map(project => (

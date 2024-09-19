@@ -11,7 +11,7 @@ export function Header() {
   const [copied, setCopied] = useState(false);
   const pathname = usePathname();
 
-  const getNetworkName = (network: any) => {
+  const getNetworkName = (network: { name: string } | null) => {
     if (!network) return "Unknown";
     return network.name.charAt(0).toUpperCase() + network.name.slice(1).toLowerCase();
   };
