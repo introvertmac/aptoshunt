@@ -6,7 +6,7 @@ import { Header } from "@/components/Header";
 import Airtable from 'airtable';
 import { FaGithub, FaTwitter, FaGlobe, FaDollarSign } from 'react-icons/fa';
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { Aptos, Network, AptosConfig, InputSubmitTransactionData } from "@aptos-labs/ts-sdk";
+import { Aptos, Network, AptosConfig } from "@aptos-labs/ts-sdk";
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 const base = new Airtable({apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}).base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID!);
@@ -29,11 +29,7 @@ export default function ProjectPage() {
   const { slug } = useParams();
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { connected, account, signAndSubmitTransaction } = useWallet();
-  // const [donationAmount, setDonationAmount] = useState("");
-  // const [donationStatus, setDonationStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-  // const aptos = new Aptos(new AptosConfig({ network: Network.TESTNET }));
+  const { connected, account } = useWallet();
 
   useEffect(() => {
     async function fetchProject() {
@@ -65,7 +61,6 @@ export default function ProjectPage() {
       console.error("Wallet not connected or project not loaded");
       return;
     }
-    // Here you would typically open a modal or navigate to a donation page
     console.log("Donation initiated for project:", project.fields.Name);
   };
 

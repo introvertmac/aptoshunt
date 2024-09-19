@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Header } from "@/components/Header";
 import Airtable from 'airtable';
@@ -50,11 +50,12 @@ export default function MyProjects() {
   const { account } = useWallet();
   const [statusOptions, setStatusOptions] = useState<string[]>([]);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
+    if (!account?.address) return;
     setIsLoading(true);
     try {
       const records = await base('Projects').select({
-        filterByFormula: `{Wallet} = '${account?.address}'`,
+        filterByFormula: `{Wallet} = '${account.address}'`,
         sort: [{ field: "Submitted", direction: "desc" }]
       }).all();
       setProjects(records.map(record => ({
@@ -66,14 +67,12 @@ export default function MyProjects() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [account?.address]);
 
   useEffect(() => {
-    if (account?.address) {
-      fetchProjects();
-      fetchStatusOptions();
-    }
-  }, [account?.address, fetchProjects]);
+    fetchProjects();
+    fetchStatusOptions();
+  }, [fetchProjects]);
 
   const fetchStatusOptions = async () => {
     try {

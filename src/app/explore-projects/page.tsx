@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Header } from "@/components/Header";
 import Link from "next/link";
 import Airtable from 'airtable';
@@ -15,7 +14,7 @@ interface Project {
     Tagline: string;
     Status: string;
     Demo: string;
-    Slug?: string; // Add this line
+    Slug?: string;
   };
 }
 

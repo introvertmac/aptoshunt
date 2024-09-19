@@ -15,7 +15,6 @@ const base = new Airtable({apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}).ba
 const generateSlug = (name: string) => {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 };
-
 export default function SubmitProject() {
   const { account, connected, network } = useWallet();
   const [projectName, setProjectName] = useState("");
@@ -49,7 +48,6 @@ export default function SubmitProject() {
 
     fetchBalance();
   }, [connected, account]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
