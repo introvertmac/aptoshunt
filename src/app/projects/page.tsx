@@ -8,25 +8,27 @@ import Airtable from 'airtable';
 // Define more specific types for Airtable
 // Removed unused 'AirtableField' interface
 
+interface ProjectFields extends Airtable.FieldSet {
+  Name: string;
+  Tagline: string;
+  Description: string;
+  Repo: string;
+  Demo: string;
+  Social: string;
+  Submitted: string;
+  Status: string;
+  Wallet: string;
+}
+
 interface AirtableBase {
-  table(name: string): Airtable.Table<Airtable.FieldSet>;
+  table(name: string): Airtable.Table<ProjectFields>;
 }
 
 const base = new Airtable({apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}).base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID!) as unknown as AirtableBase;
 
 interface Project {
   id: string;
-  fields: {
-    Name: string;
-    Tagline: string;
-    Description: string;
-    Repo: string;
-    Demo: string;
-    Social: string;
-    Submitted: string;
-    Status: string;
-    Wallet: string;
-  };
+  fields: ProjectFields;
 }
 
 const statusColors: {[key: string]: string} = {
