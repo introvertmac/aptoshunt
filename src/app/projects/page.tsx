@@ -14,10 +14,8 @@ interface AirtableField {
   };
 }
 
-interface AirtableBase extends Airtable.Base {
-  table(name: string): Airtable.Table<any> & {
-    fields(): Promise<AirtableField[]>;
-  };
+interface AirtableBase {
+  table(name: string): Airtable.Table<any>;
 }
 
 const base = new Airtable({apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}).base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID!) as unknown as AirtableBase;
@@ -48,13 +46,13 @@ export default function MyProjects() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingProject, setEditingProject] = useState<string | null>(null);
   const { account } = useWallet();
-  const [statusOptions, setStatusOptions] = useState<string[]>([]);
 
   const fetchProjects = useCallback(async () => {
     if (!account?.address) return;
     setIsLoading(true);
     try {
-      const records = await base('Projects').select({
+      const table = base.table('Projects');
+      const records = await table.select({
         filterByFormula: `{Wallet} = '${account.address}'`,
         sort: [{ field: "Submitted", direction: "desc" }]
       }).all();
@@ -71,20 +69,7 @@ export default function MyProjects() {
 
   useEffect(() => {
     fetchProjects();
-    fetchStatusOptions();
   }, [fetchProjects]);
-
-  const fetchStatusOptions = async () => {
-    try {
-      const fields = await base.table('Projects').fields();
-      const statusField = fields.find(field => field.name === 'Status');
-      if (statusField && statusField.type === 'singleSelect') {
-        setStatusOptions(statusField.options?.choices?.map(choice => choice.name) || []);
-      }
-    } catch (error) {
-      console.error('Error fetching status options:', error);
-    }
-  };
 
   const handleEdit = (projectId: string) => {
     setEditingProject(projectId);
@@ -92,7 +77,7 @@ export default function MyProjects() {
 
   const handleSave = async (project: Project) => {
     try {
-      await base('Projects').update(project.id, project.fields);
+      await base.table('Projects').update(project.id, project.fields);
       setEditingProject(null);
       fetchProjects(); // Refresh the projects list
     } catch (error) {

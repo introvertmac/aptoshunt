@@ -48,7 +48,8 @@ export default function SubmitProject() {
 
     fetchBalance();
   }, [connected, account]);
-  const handleSubmit = async (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
@@ -233,17 +234,17 @@ export default function SubmitProject() {
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Project'}
               </button>
+              {submitStatus === 'success' && (
+                <p className="text-green-600 dark:text-green-400 text-center mt-4">
+                  Project submitted successfully! Redirecting...
+                </p>
+              )}
+              {submitStatus === 'error' && (
+                <p className="text-red-600 dark:text-red-400 text-center mt-4">
+                  {errorMessage}
+                </p>
+              )}
             </form>
-            {submitStatus === 'success' && (
-              <div className="mt-4 p-4 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200 rounded-lg">
-                Project submitted successfully! Redirecting to projects page...
-              </div>
-            )}
-            {submitStatus === 'error' && (
-              <div className="mt-4 p-4 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 rounded-lg">
-                {errorMessage}
-              </div>
-            )}
           </>
         )}
         

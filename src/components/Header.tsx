@@ -6,10 +6,16 @@ import { WalletConnectButton } from "./WalletConnectButton";
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 export function Header() {
-  const { network, connected, account, disconnect } = useWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { account, disconnect, connected, network } = useWallet();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const closeMenu = () => setIsMenuOpen(false);
+    window.addEventListener('resize', closeMenu);
+    return () => window.removeEventListener('resize', closeMenu);
+  }, []);
 
   const getNetworkName = (network: { name: string } | null) => {
     if (!network) return "Unknown";
