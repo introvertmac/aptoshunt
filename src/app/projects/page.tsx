@@ -6,13 +6,7 @@ import { Header } from "@/components/Header";
 import Airtable from 'airtable';
 
 // Define more specific types for Airtable
-interface AirtableField {
-  name: string;
-  type: string;
-  options?: {
-    choices?: Array<{ name: string }>;
-  };
-}
+// Removed unused 'AirtableField' interface
 
 interface AirtableBase {
   table(name: string): Airtable.Table<any>;

@@ -6,7 +6,6 @@ import { Header } from "@/components/Header";
 import Airtable from 'airtable';
 import { FaGithub, FaTwitter, FaGlobe, FaDollarSign } from 'react-icons/fa';
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { Aptos, Network, AptosConfig } from "@aptos-labs/ts-sdk";
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 const base = new Airtable({apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}).base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID!);
