@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Header } from "@/components/Header";
 import Airtable from 'airtable';
+import Link from "next/link";
 
 // Define more specific types for Airtable
 // Removed unused 'AirtableField' interface
@@ -41,7 +42,7 @@ export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingProject, setEditingProject] = useState<string | null>(null);
-  const { account } = useWallet();
+  const { account, connect, isLoading: isWalletLoading } = useWallet();
 
   const fetchProjects = useCallback(async () => {
     if (!account?.address) return;
@@ -58,14 +59,20 @@ export default function MyProjects() {
       })));
     } catch (error) {
       console.error('Error fetching projects:', error);
+      // You could add a state to show an error message to the user
     } finally {
       setIsLoading(false);
     }
   }, [account?.address]);
 
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+    if (account?.address) {
+      fetchProjects();
+    } else {
+      setProjects([]);
+      setIsLoading(false);
+    }
+  }, [account?.address, fetchProjects]);
 
   const handleEdit = (projectId: string) => {
     setEditingProject(projectId);
@@ -91,13 +98,25 @@ export default function MyProjects() {
     ));
   };
 
-  if (isLoading) {
+  if (isWalletLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 dark:border-white"></div>
-          <p className="mt-4 text-xl">Loading your projects...</p>
+          <p className="mt-4 text-xl">Connecting to wallet...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!account) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white">
+        <Header />
+        <main className="container mx-auto px-4 py-12 text-center">
+          <h1 className="text-4xl font-bold mb-8">My Projects</h1>
+          <p className="text-xl mb-8">Connect your wallet in the header to view and manage your projects.</p>
+        </main>
       </div>
     );
   }
@@ -107,8 +126,18 @@ export default function MyProjects() {
       <Header />
       <main className="container mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold mb-8 text-center">My Projects</h1>
-        {projects.length === 0 ? (
-          <p className="text-center text-xl">You haven&apos;t submitted any projects yet.</p>
+        {isLoading ? (
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 dark:border-white mx-auto"></div>
+            <p className="mt-4 text-xl">Loading your projects...</p>
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="text-center">
+            <p className="text-xl mb-8">You haven&apos;t submitted any projects yet.</p>
+            <Link href="/submit-project" className="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-colors text-lg font-medium">
+              Submit Your First Project
+            </Link>
+          </div>
         ) : (
           <div className="space-y-8">
             {projects.map(project => (
