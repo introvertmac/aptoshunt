@@ -42,7 +42,7 @@ export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingProject, setEditingProject] = useState<string | null>(null);
-  const { account, connect, isLoading: isWalletLoading } = useWallet();
+  const { account, isLoading: isWalletLoading } = useWallet();
 
   const fetchProjects = useCallback(async () => {
     if (!account?.address) return;
