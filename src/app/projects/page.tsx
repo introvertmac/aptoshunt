@@ -115,7 +115,7 @@ export default function MyProjects() {
         <Header />
         <main className="container mx-auto px-4 py-12 text-center">
           <h1 className="text-4xl font-bold mb-8">My Projects</h1>
-          <p className="text-xl mb-8">Connect your wallet in the header to view and manage your projects.</p>
+          <p className="text-xl mb-8">Connect your wallet to view and manage your projects.</p>
         </main>
       </div>
     );
