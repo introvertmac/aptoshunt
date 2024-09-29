@@ -1,3 +1,5 @@
+"use client";  // Add this line at the top of the file
+
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useState, useRef, useEffect } from "react";
 import { WalletName } from "@aptos-labs/wallet-adapter-react";

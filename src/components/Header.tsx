@@ -1,20 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { WalletConnectButton } from "./WalletConnectButton";
-import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ClipboardIcon, CheckIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isWalletDropdownOpen, setIsWalletDropdownOpen] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const { account, disconnect, connected, network } = useWallet();
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const closeMenu = () => setIsMenuOpen(false);
+    const closeDropdown = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsWalletDropdownOpen(false);
+      }
+    };
     window.addEventListener('resize', closeMenu);
-    return () => window.removeEventListener('resize', closeMenu);
+    document.addEventListener('mousedown', closeDropdown);
+    return () => {
+      window.removeEventListener('resize', closeMenu);
+      document.removeEventListener('mousedown', closeDropdown);
+    };
   }, []);
 
   const getNetworkName = (network: { name: string } | null): string => {
@@ -33,87 +44,94 @@ export function Header() {
     });
   };
 
-  useEffect(() => {
-    if (!isMenuOpen) {
-      setCopied(false);
-    }
-  }, [isMenuOpen]);
+  const navItems = [
+    { name: 'Explore Projects', href: '/explore-projects' },
+    { name: 'Submit Project', href: '/submit-project' },
+    { name: 'My Projects', href: '/projects' },
+  ];
 
   return (
-    <header className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800">
-      <Link href="/" className="text-2xl font-bold hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-        Aptos Hunt
-      </Link>
-      <Link
-        href="/explore-projects"
-        className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition-colors mr-4"
-      >
-        Explore Projects
-      </Link>
-      <div className="flex items-center space-x-4">
-        {connected && (
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-            {getNetworkName(network)}
-          </span>
-        )}
-        {!connected && <WalletConnectButton />}
-        {connected && (
-          <div className="relative">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
+    <header className="bg-gray-800 shadow-md">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <Link href="/" className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          Aptos Hunt
+        </Link>
+
+        <nav className="hidden md:flex space-x-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`text-gray-300 hover:text-white transition-colors ${
+                pathname === item.href ? 'font-semibold' : ''
+              }`}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-            {isMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-10">
-                <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 flex items-center justify-between">
-                  <span>{shortenAddress(account?.address || '')}</span>
+              {item.name}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center space-x-4">
+          {!connected && <WalletConnectButton />}
+          {connected && account && (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsWalletDropdownOpen(!isWalletDropdownOpen)}
+                className="bg-gray-700 text-gray-200 px-4 py-2 rounded-lg flex items-center space-x-2"
+              >
+                <span>{shortenAddress(account.address)}</span>
+                <ChevronDownIcon className="h-5 w-5" />
+              </button>
+              {isWalletDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg py-1 z-10">
                   <button
-                    onClick={() => copyToClipboard(account?.address || '')}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                    onClick={() => copyToClipboard(account.address)}
+                    className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 w-full text-left"
                   >
-                    {copied ? (
-                      <CheckIcon className="h-5 w-5" />
-                    ) : (
-                      <ClipboardIcon className="h-5 w-5" />
-                    )}
+                    {copied ? 'Copied!' : 'Copy Address'}
+                  </button>
+                  <div className="px-4 py-2 text-sm text-gray-400">
+                    {getNetworkName(network)}
+                  </div>
+                  <button
+                    onClick={disconnect}
+                    className="block px-4 py-2 text-sm text-red-400 hover:bg-gray-600 w-full text-left"
+                  >
+                    Disconnect Wallet
                   </button>
                 </div>
-                {pathname !== '/projects' && (
-                  <Link
-                    href={`/projects`}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    My Projects
-                  </Link>
-                )}
-                {pathname !== '/submit-project' && (
-                  <Link
-                    href="/submit-project"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Submit Project
-                  </Link>
-                )}
-                <button
-                  onClick={() => {
-                    disconnect();
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm bg-red-500 text-white hover:bg-red-600 transition-colors"
-                >
-                  Disconnect Wallet
-                </button>
-              </div>
+              )}
+            </div>
+          )}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden text-gray-300 hover:text-white"
+          >
+            {isMenuOpen ? (
+              <XMarkIcon className="h-6 w-6" />
+            ) : (
+              <Bars3Icon className="h-6 w-6" />
             )}
-          </div>
-        )}
+          </button>
+        </div>
       </div>
+
+      {isMenuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -5,9 +5,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Header } from "@/components/Header";
 import Airtable from 'airtable';
 import Link from "next/link";
-
-// Define more specific types for Airtable
-// Removed unused 'AirtableField' interface
+import { FaEdit, FaExternalLinkAlt, FaGithub, FaTwitter } from 'react-icons/fa';
 
 interface ProjectFields extends Airtable.FieldSet {
   Name: string;
@@ -59,7 +57,6 @@ export default function MyProjects() {
       })));
     } catch (error) {
       console.error('Error fetching projects:', error);
-      // You could add a state to show an error message to the user
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +79,7 @@ export default function MyProjects() {
     try {
       await base.table('Projects').update(project.id, project.fields);
       setEditingProject(null);
-      fetchProjects(); // Refresh the projects list
+      fetchProjects();
     } catch (error) {
       console.error('Error updating project:', error);
     }
@@ -139,70 +136,93 @@ export default function MyProjects() {
             </Link>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map(project => (
-              <div key={project.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+              <div key={project.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                 {editingProject === project.id ? (
-                  <form onSubmit={(e) => { e.preventDefault(); handleSave(project); }}>
+                  <form onSubmit={(e) => { e.preventDefault(); handleSave(project); }} className="p-6 space-y-4">
                     <input
                       type="text"
                       value={project.fields.Name}
                       onChange={(e) => handleInputChange(project.id, 'Name', e.target.value)}
-                      className="w-full mb-2 p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      placeholder="Project Name"
                     />
                     <input
                       type="text"
                       value={project.fields.Tagline}
                       onChange={(e) => handleInputChange(project.id, 'Tagline', e.target.value)}
-                      className="w-full mb-2 p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      placeholder="One Line Description"
                     />
                     <textarea
                       value={project.fields.Description}
                       onChange={(e) => handleInputChange(project.id, 'Description', e.target.value)}
-                      className="w-full mb-2 p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      rows={3}
+                      placeholder="Project Description"
                     />
                     <input
                       type="text"
                       value={project.fields.Repo}
                       onChange={(e) => handleInputChange(project.id, 'Repo', e.target.value)}
-                      className="w-full mb-2 p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      placeholder="GitHub Repository URL"
                     />
                     <input
                       type="text"
                       value={project.fields.Demo}
                       onChange={(e) => handleInputChange(project.id, 'Demo', e.target.value)}
-                      className="w-full mb-2 p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      placeholder="Demo URL"
                     />
                     <input
                       type="text"
                       value={project.fields.Social}
                       onChange={(e) => handleInputChange(project.id, 'Social', e.target.value)}
-                      className="w-full mb-2 p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white"
+                      placeholder="X (Twitter) URL"
                     />
-                    <div className="flex justify-end space-x-2 mt-4">
-                      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save</button>
+                    <div className="flex justify-end space-x-2">
+                      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
                       <button type="button" onClick={handleCancel} className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
                     </div>
                   </form>
                 ) : (
-                  <>
+                  <div className="p-6">
                     <h2 className="text-xl font-semibold mb-2">{project.fields.Name}</h2>
-                    <p className="text-gray-600 dark:text-gray-300 mb-2">{project.fields.Tagline}</p>
-                    <p className="mb-2">{project.fields.Description}</p>
-                    <p className="mb-2">Repo: <a href={project.fields.Repo} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{project.fields.Repo}</a></p>
-                    <p className="mb-2">Demo: <a href={project.fields.Demo} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{project.fields.Demo}</a></p>
-                    <p className="mb-2">Social: <a href={project.fields.Social} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{project.fields.Social}</a></p>
-                    <p className="mb-2">Submitted: {new Date(project.fields.Submitted).toLocaleDateString()}</p>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">{project.fields.Tagline}</p>
                     <div className="mb-4">
-                      <span className="text-sm font-medium">Status:</span>
-                      <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[project.fields.Status] || 'bg-gray-100 text-gray-800'}`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[project.fields.Status] || 'bg-gray-100 text-gray-800'}`}>
                         {project.fields.Status}
                       </span>
                     </div>
-                    {project.fields.Status !== 'Approved' && (
-                      <button onClick={() => handleEdit(project.id)} className="bg-green-500 text-white px-4 py-2 rounded">Edit</button>
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                      {project.fields.Repo && (
+                        <a href={project.fields.Repo} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center">
+                          <FaGithub className="mr-1" /> GitHub
+                        </a>
+                      )}
+                      {project.fields.Demo && (
+                        <a href={project.fields.Demo} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center">
+                          <FaExternalLinkAlt className="mr-1" /> Demo
+                        </a>
+                      )}
+                      {project.fields.Social && (
+                        <a href={project.fields.Social} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center">
+                          <FaTwitter className="mr-1" /> Twitter
+                        </a>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      Submitted: {new Date(project.fields.Submitted).toLocaleDateString()}
+                    </p>
+                    {project.fields.Status === 'Pending' && (
+                      <button onClick={() => handleEdit(project.id)} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center">
+                        <FaEdit className="mr-2" /> Edit Project
+                      </button>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             ))}
