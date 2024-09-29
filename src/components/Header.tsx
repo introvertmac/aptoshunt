@@ -3,7 +3,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { WalletConnectButton } from "./WalletConnectButton";
-import { ChevronDownIcon, ClipboardIcon, CheckIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Header } from "@/components/Header";
 import Airtable from 'airtable';
@@ -131,12 +131,13 @@ export default function ProjectPage() {
               <span>{project.fields.Wallet}</span>
               <button
                 onClick={() => copyToClipboard(project.fields.Wallet)}
-                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 ml-2"
+                className="text-blue-500 hover:text-blue-600 transition-colors ml-2 focus:outline-none"
+                aria-label="Copy wallet address"
               >
                 {copied ? (
-                  <CheckIcon className="h-5 w-5" />
+                  <CheckIcon className="h-6 w-6" />
                 ) : (
-                  <ClipboardIcon className="h-5 w-5" />
+                  <ClipboardIcon className="h-6 w-6" />
                 )}
               </button>
             </div>
