@@ -40,6 +40,7 @@ export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingProject, setEditingProject] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const { account, isLoading: isWalletLoading } = useWallet();
 
   const fetchProjects = useCallback(async () => {
@@ -76,12 +77,22 @@ export default function MyProjects() {
   };
 
   const handleSave = async (project: Project) => {
+    setIsSaving(true);
     try {
-      await base.table('Projects').update(project.id, project.fields);
+      await base.table('Projects').update(project.id, {
+        Name: project.fields.Name,
+        Tagline: project.fields.Tagline,
+        Description: project.fields.Description,
+        Repo: project.fields.Repo,
+        Demo: project.fields.Demo,
+        Social: project.fields.Social
+      });
       setEditingProject(null);
       fetchProjects();
     } catch (error) {
       console.error('Error updating project:', error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -184,7 +195,13 @@ export default function MyProjects() {
                       placeholder="X (Twitter) URL"
                     />
                     <div className="flex justify-end space-x-2">
-                      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>
+                      <button 
+                        type="submit" 
+                        className={`bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={isSaving}
+                      >
+                        {isSaving ? 'Saving...' : 'Save'}
+                      </button>
                       <button type="button" onClick={handleCancel} className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
                     </div>
                   </form>
